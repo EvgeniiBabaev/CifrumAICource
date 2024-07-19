@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test my API</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <h2>Hello, API</h2>
+    <div>
+        <h3>SKAB anomaly prediction</h3>
+        <table class="table">
+          <th title="Accelerometer1RMS" >Accelerometer1RMS</th>
+          <th title="Accelerometer2RMS">Accelerometer2RMS</th>
+          <th title="Current">Current</th>
+          <th title="Pressure">Pressure</th>
+          <th title="Temperature">Temperature</th>
+          <th title="Thermocouple">Thermocouple</th>
+          <th title="Voltage">Voltage</th>
+          <th title="Volume Flow RateRMS">Volume Flow RateRMS</th>
+          <tr>
+            <td><input id="accelerometer1RMS" value="0.133521" /></td>
+            <td><input id="accelerometer2RMS" value="1.27794" /></td>
+            <td><input id="current" value="1.27794" /></td>
+            <td><input id="pressure" value="0.054711" /></td>
+            <td><input id="temperature" value="92.2562" /></td>
+            <td><input id="thermocouple" value="22.2577" /></td>
+            <td><input id="voltage" value="209.639" /></td>
+            <td><input id="volume_flow_rateRMS" value="76.0197" /></td>
+          </tr>
+        </table>
+        
+      </div>
+    <p>Anomaly: <span id="result"></span></p>
+    <button onclick="send()">Отправить</button>
+</body>
+
+<script>
+async function send(){
+    // получаем введеные в поля данные
+    const accelerometer1RMS = document.getElementById("accelerometer1RMS").value;
+    const accelerometer2RMS = document.getElementById("accelerometer2RMS").value;
+    const current = document.getElementById("current").value;
+    const pressure = document.getElementById("pressure").value;
+    const temperature = document.getElementById("temperature").value;
+    const thermocouple = document.getElementById("thermocouple").value;
+    const voltage = document.getElementById("voltage").value;
+    const volume_flow_rateRMS = document.getElementById("volume_flow_rateRMS").value;
+
+    const response = await fetch("/predict", {
+            method: "POST",
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                X: [(new Date(Date.now())).toISOString()+';'+accelerometer1RMS+';'+accelerometer2RMS+';'+current+';'+pressure+';'+temperature+';'+thermocouple+';'+voltage+';'+volume_flow_rateRMS]
+            })
+        });
+        if (response.ok) {
+            const data = await response.json(); 
+            document.getElementById("result").textContent = data.result;
+        }
+        else
+            console.log(response);
+}
+</script>
+
+</html>
