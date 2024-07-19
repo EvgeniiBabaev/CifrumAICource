@@ -14,3 +14,8 @@
 запуск:
 
 ```python main.py```
+
+запуск в docker:
+
+```docker-compose up -d --build```
+
