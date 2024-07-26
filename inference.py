@@ -14,7 +14,7 @@ def create_sequences(values, time_steps):
         output.append(values[i : (i + time_steps)])
     return np.stack(output)
 
-def model_inference(df, load_model, N_STEPS, Q = 0.999):     
+def model_inference(df, load_model, N_STEPS = 60, Q = 0.999):     
     # обучающая выборка с нормальным режимом работы
     df_train = pd.read_csv('./data/other/1.csv', sep = ";", index_col='datetime', parse_dates=True)
     df_train = df_train.drop(['anomaly', 'changepoint'], axis=1)
@@ -30,7 +30,7 @@ def model_inference(df, load_model, N_STEPS, Q = 0.999):
 
     # построение невязки модели и подбор порога на обучающей выборке
     residuals = pd.Series(np.sum(np.mean(np.abs(X - load_model.predict(X)), axis=1), axis=1))
-    UCL = residuals.quantile(Q) * 3/2
+    UCL = residuals.quantile(Q) * 1.1
 
     # прогноз на всей выборке и построение невязки
     X = create_sequences(StSc.transform(df), N_STEPS)

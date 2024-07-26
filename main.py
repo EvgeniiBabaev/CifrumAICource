@@ -35,7 +35,7 @@ def predict_model(model:Model):
     string_data="""datetime;Accelerometer1RMS;Accelerometer2RMS;Current;Pressure;Temperature;Thermocouple;Voltage;Volume Flow RateRMS
 """ + '\n'.join(model.X)
     df = pd.read_csv(io.StringIO(string_data), sep=";", index_col="datetime", parse_dates=True)
-    result = inference.model_inference(df, loaded_model, len(model.X))
+    result = inference.model_inference(df, loaded_model, 60)
     return {"result": ';'.join(map(str, result))}
 
 def main():
